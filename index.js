@@ -10,16 +10,18 @@ module.exports = function(source) {
 
 	var getClazz = 'var clazz = ' + clazz + ';';
 	var checkClazz = 'if (!clazz || clazz.prototype.render === undefined) { throw new Error("no valid component specified"); }'
-	var render = 'React.render(React.createElement(clazz, ' + JSON.stringify(props) + '), document.body);';
+	var componentElement = 'React.createElement(clazz,' + JSON.stringify(props) + ')';
+	var render = 'var ReactDOM = require("react-dom"); ReactDOM.render(' + componentElement + ', document.body);';
 
 	var doRender = '{(function() {' + getClazz + checkClazz + render + '})();}';
 
-	//if replace a react render is not set to false or if there is no react render, let's add it
-	if(query.replace !== 'false' || !source.match(/\bReact.render\((.*)\)/,'')){
-		source = source.replace(/\bReact.render\((.*)\)/,'');
-		return source + doRender;
-	}
-	else {
+	
+	// if there is no `ReactDOM.render`
+	// inject doRender piece
+	var regex = /\bReactDOM\.render\((.*)\)/;
+	if (source.match(regex)) {
 		return source;
+	} else {
+		return source + doRender;
 	}
 };
