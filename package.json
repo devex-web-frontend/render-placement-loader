@@ -1,7 +1,7 @@
 {
   "name": "render-placement-loader",
-  "version": "2.1.1",
-  "description": "Automatically add React.render to your JSX file",
+  "version": "2.2.0",
+  "description": "Automatically add ReactDom.render to your JSX file",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
