@@ -11,9 +11,15 @@ module.exports = function(source) {
 	var getClazz = 'var clazz = ' + clazz + ';';
 	var checkClazz = 'if (!clazz || clazz.prototype.render === undefined) { throw new Error("no valid component specified"); }'
 	var componentElement = 'React.createElement(clazz,' + JSON.stringify(props) + ')';
-	var render = 'var ReactDOM = require("react-dom"); ReactDOM.render(' + componentElement + ', document.body);';
+	var container = 'document.body';
+	var checkAndCreateContainer = '';
+	if (query.containerId) {
+		checkAndCreateContainer = 'var container = document.getElementById( "'+ query.containerId +'" ); if (!container) { container = document.createElement("div"); container.setAttribute("id", "' + query.containerId + '"); document.body.appendChild(container)} ';
+		container = 'document.getElementById( "'+ query.containerId +'" )';
+	}
+	var render = 'var ReactDOM = require("react-dom"); ReactDOM.render(' + componentElement + ', ' +container+ ');';
 
-	var doRender = '{(function() {' + getClazz + checkClazz + render + '})();}';
+	var doRender = '{(function() {' + getClazz + checkClazz + checkAndCreateContainer + render + '})();}';
 
 	
 	// if there is no `ReactDOM.render`
